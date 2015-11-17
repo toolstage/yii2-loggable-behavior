@@ -1,0 +1,21 @@
+{
+  "name": "jonasw91/yii2-loggable-behavior",
+  "type": "yii2-extension",
+  "description": "Yii2 Loggable Behavior",
+  "keywords": ["yii2", "bahavior", "loggable", "extension"],
+  "license": "BSD-3-Clause",
+  "authors": [
+    {
+      "name": "Jonas Wehner",
+      "email": "wehner.jonas91@gmail.com"
+    }
+  ],
+  "require": {
+    "yiisoft/yii2": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "jonasw91\\loggable-behavior\\": ""
+    }
+  }
+}
