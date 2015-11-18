@@ -1,21 +1,30 @@
 {
-  "name": "jonasw91/yii2-loggable-behavior",
+  "name": "toolstage/yii2-loggable-behavior",
   "type": "yii2-extension",
+  "version": "0.0.2-dev",
   "description": "Yii2 Loggable Behavior",
-  "keywords": ["yii2", "bahavior", "loggable", "extension"],
+  "keywords": [
+    "yii2",
+    "behavior",
+    "logging",
+    "extension"
+  ],
+  "homepage": "https://github.com/toolstage/yii2-loggable-behavior",
   "license": "BSD-3-Clause",
   "authors": [
     {
       "name": "Jonas Wehner",
-      "email": "wehner.jonas91@gmail.com"
+      "email": "wehner.jonas91@gmail.com",
+      "role": "Developer"
     }
   ],
+  "issues": "https://github.com/toolstage/yii2-loggable-behavior/issues",
   "require": {
     "yiisoft/yii2": "*"
   },
   "autoload": {
     "psr-4": {
-      "jonasw91\\loggable-behavior\\": ""
+      "toolstage\\loggablebehavior\\": ""
     }
   }
 }
