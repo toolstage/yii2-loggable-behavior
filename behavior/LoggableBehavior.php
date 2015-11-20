@@ -136,6 +136,12 @@ class LoggableBehavior extends Behavior
             $logEntry->old_attr = json_encode(array_diff_assoc($old_attr, $new_attr));
             $logEntry->new_attr = json_encode(array_diff_assoc($new_attr, $old_attr));
         }
+        else {
+            if ($action == ACTION_UPDATE) {
+                return false;
+            }
+        }
+
         return $logEntry->save(true);
     }
 

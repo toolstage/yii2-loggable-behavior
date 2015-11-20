@@ -44,13 +44,15 @@ $index = 0;
                     <div id="collapse<?= $index; ?>" class="panel-collapse collapse" aria-expanded="false"
                          style="height: 0px;" role="tabpanel">
                         <div class="box-body">
-                            <?= \yii\widgets\ListView::widget([
-                                'dataProvider' => $item,
-                                'itemOptions' => ['class' => 'item'],
-                                // TODO DEFAULT VIEW FOR ACTIVERECORD
-                                'itemView' => $itemView[$i],
-                                'layout' => "{items}\n{pager}\n{summary}"
-                            ]); ?>
+                            <ul class="list-group">
+                                <?= \yii\widgets\ListView::widget([
+                                    'dataProvider' => $item,
+                                    'itemOptions' => ['class' => 'item'],
+                                    // TODO DEFAULT VIEW FOR ACTIVERECORD
+                                    'itemView' => $itemView[$index],
+                                    'layout' => "{items}\n{pager}\n{summary}",
+                                ]); ?>
+                            </ul>
                         </div>
                     </div>
                 </div>

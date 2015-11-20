@@ -7,5 +7,5 @@
  */
 
 if (is_null($haveSeen)) {
-    echo '<i class="glyphicon glyphicon-plus-sign"></i>';
+    echo '<span style="' . $style . '" class="' . $class . '">Neu</span>';
 }
