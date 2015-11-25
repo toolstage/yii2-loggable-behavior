@@ -4,12 +4,9 @@ namespace jonasw91\loggablebehavior\behavior;
 
 use jonasw91\loggablebehavior\models\LogEntry;
 use yii\base\Behavior;
+use yii\base\Exception;
 use yii\db\ActiveRecord;
 
-define("ACTION_CREATE", 'create');
-define("ACTION_UPDATE", 'update');
-define("ACTION_DELETE", 'delete');
-define("ACTION_VIEW", 'view');
 
 /**
  * Class LoggableBehavior
@@ -45,6 +42,11 @@ define("ACTION_VIEW", 'view');
  */
 class LoggableBehavior extends Behavior
 {
+    const ACTION_CREATE = "create";
+    const ACTION_UPDATE = "update";
+    const ACTION_DELETE = "delete";
+    const ACTION_VIEW = "view";
+
     /**
      * @var array - contains all properties of the behavior model witch should be observed
      */
@@ -80,6 +82,9 @@ class LoggableBehavior extends Behavior
         ];
     }
 
+    /**
+     * Handles the event callback
+     */
     public function handleEvent($event)
     {
         /**
@@ -88,18 +93,20 @@ class LoggableBehavior extends Behavior
         $action = \Yii::$app->requestedAction->id;
 
         if ($this->containsAction($action)) {
-
             /**
              *  Get the Model
              */
             $model = $this->owner;
 
-            /**
-             * Get the attributes
-             */
-            $attr = $this->removeUnusedAttributes($model->getAttributes());
-            $oldAttr = $this->removeUnusedAttributes($model->getOldAttributes());
-
+            $attr = null;
+            $oldAttr = null;
+            if (strcmp($action, self::ACTION_UPDATE) == 0 || strcmp($action, 'createajax') == 0) {
+                /**
+                 * Get the attributes
+                 */
+                $attr = $this->removeUnusedAttributes($model->getAttributes());
+                $oldAttr = $this->removeUnusedAttributes($model->getOldAttributes());
+            }
             return $this->addLogEntry($model->id, $model->className(), $action, $oldAttr, $attr, $action);
         }
         return false;
@@ -123,7 +130,7 @@ class LoggableBehavior extends Behavior
      */
     protected function addLogEntry($model_id, $model_type, $action, $old_attr = null, $new_attr = null, $action = null)
     {
-        if ($action == ACTION_VIEW || $action == ACTION_CREATE) {
+        if ($action == self::ACTION_VIEW || $action == self::ACTION_CREATE) {
             if (LogEntry::findOne(['model_id' => $model_id, 'model_type' => $model_type])) {
                 return false;
             }
@@ -135,13 +142,11 @@ class LoggableBehavior extends Behavior
         if (!is_null($old_attr) && !is_null($new_attr) && count(array_diff_assoc($old_attr, $new_attr))) {
             $logEntry->old_attr = json_encode(array_diff_assoc($old_attr, $new_attr));
             $logEntry->new_attr = json_encode(array_diff_assoc($new_attr, $old_attr));
-        }
-        else {
-            if ($action == ACTION_UPDATE) {
+        } else {
+            if ($action == self::ACTION_UPDATE) {
                 return false;
             }
         }
-
         return $logEntry->save(true);
     }
 
@@ -189,13 +194,27 @@ class LoggableBehavior extends Behavior
         return false;
     }
 
-    public function containsActionType($action, $actionType)
+    /**
+     *
+     * @return string one of ['create','update','view','delete']
+     * @throws Exception
+     *      if the given reaction has not been specified
+     */
+    public function getActionType($action)
     {
-        if (in_array($action, $actionType)) {
-            var_dump($action, $actionType, in_array($action, $actionType));
-            die();
-            return true;
+        foreach ($this->actions as $key => $value) {
+            if (in_array($action, $value)) {
+                return $key;
+            }
         }
-        return false;
+        throw new Exception ("Unkown action: " . $action . ". You have to define your action at the LoggableBehavior!");
+    }
+
+    /**
+     * @return string
+     */
+    public function _toString()
+    {
+        return "LoggableBehavior of " . $this->owner->id;
     }
 }

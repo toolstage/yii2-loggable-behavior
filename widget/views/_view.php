@@ -8,31 +8,24 @@
  */
 
 use app\models\User;
-use jonasw91\loggablebehavior\widget\LogEntryWidget;
+use jonasw91\loggablebehavior\behavior\LoggableBehavior;
+use yii\base\Exception;
 
+/**
+ * @var LoggableBehavior $behavior
+ * @var string $widgetClass
+ */
 
+if (!class_exists($widgetClass)) {
+    throw new Exception ("Class file doesn't exists!");
+}
 $element = "";
 $action = $model->action;
 $user = User::findIdentity($model->created_by)->username;
 
-
-if (strcmp($action, ACTION_CREATE) == 0 || $behavior->containsActionType($action, $behavior->actions[ACTION_CREATE])) {
-    $element .= LogEntryWidget::$icons['create'] . '&emsp;Erstellt von <b>' . $user . '</b><div class="pull-right">' . date('d.m.y, H:i', $model->created_at) . '</div>';
-} else if (strcmp($action, ACTION_UPDATE) == 0 || $behavior->containsActionType($action, $behavior->actions[ACTION_UPDATE])) {
-    $element .= LogEntryWidget::$icons['edit'] . '&emsp;Bearbeitet von <b>' . $user . '</b><div class="pull-right">' . date('d.m.y, H:i', $model->created_at) . '</div>';
-    $attributes = json_decode($model->old_attr, true);
-    if (!is_null($attributes)) {
-        $element .= '<div class="box collapsed-box ">';
-        $element .= '<div class="box-tools pull-right"><button class="btn btn-box-tool" data-widget="collapse" aria-expanded="true"><i class="fa fa-plus"></i></button></div>';
-        foreach ($attributes as $key1 => $value1) {
-            $element .= LogEntryWidget::createChangeOutput($key1, $value1, $model);
-        }
-        $element .= '</div>';
-    }
-} else if (strcmp($action, ACTION_VIEW) == 0 || $behavior->containsActionType($action, $behavior->actions[ACTION_VIEW])) {
-    $element .= LogEntryWidget::$icons['view'] . '&emsp;Angesehen von <b>' . $user . '</b><div class="pull-right">' . date('d.m.y, H:i', $model->created_at) . '</div>';
-} else if (strcmp($action, ACTION_DELETE) == 0 || $behavior->containsActionType($action, $behavior->actions[ACTION_DELETE])) {
-    $element .= LogEntryWidget::$icons['delete'] . '&emsp;Gelöscht von <b>' . $user . '</b><div class="pull-right">' . date('d.m.y, H:i', $model->created_at) . '</div>';
+//$element .= TaskLogEntryWidget::createLogEntryHeader($action, $user, $model->created_at, $behavior, $attributes, $model);
+$element .= $widgetClass::createLogEntryHeader($behavior, $model);
+if (isset($model->old_attr) && isset($model->new_attr) && !is_null($model->old_attr) && !is_null($model->new_attr)) {
+    $element .= $widgetClass::createLogEntryBodyUpdate($model);
 }
-
-echo '<li class="list-group-item" id="collapseExample">' . $element . '</li>';
+echo '<div class="logheader" id="collapseExample">' . $element . '</div>';

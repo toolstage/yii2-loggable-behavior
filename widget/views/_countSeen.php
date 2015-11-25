@@ -6,5 +6,10 @@
  * Time: 17:51
  */
 
-echo '<span data-toggle="tooltip" title="" class="badge bg-light-blue" data-original-title="' . $countSeen . ' New ' . $modelType . '">' . $countSeen . '</span>';
+/**
+ * @var integer $countSeen
+ * @var string $modelType
+ */
+
+echo '<span data-toggle="tooltip" title="" class="btn btn-sm btn-info flat" data-original-title="' . $countSeen . ' Neue ' . $modelType . '">' . $countSeen . '</span>';
 

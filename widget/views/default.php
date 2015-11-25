@@ -6,10 +6,18 @@
  * Time: 12:54
  */
 use yii\widgets\ListView;
+use \yii\data\ActiveDataProvider;
+use \jonasw91\loggablebehavior\behavior\LoggableBehavior;
 
+/**
+ * @var ActiveDataProvider $data
+ * @var string $view
+ * @var LoggableBehavior $behavior
+ * @var string $widgetClass
+ */
 ?>
-<div class="box box-default">
-    <div class="box-header">
+<div class="box panel-default">
+    <div class="box-header panel-heading">
         <h3 class="box-title">Logs</h3>
 
         <div class="box-tools pull-right">
@@ -19,15 +27,20 @@ use yii\widgets\ListView;
         </div>
     </div>
     <div class="box-body">
-        <div class="list-group" style="padding:10px;">
+        <div class="" style="padding:10px;">
+
             <?php
-                echo ListView::widget([
-                    'dataProvider' => $data,
-                    'itemOptions' => ['class' => 'item'],
-                    'itemView' => '_view',
-                    'viewParams' => ['behavior' => $behavior],
-                    'layout' => "{pager}\n{items}\n{summary}"
-                ]);
+            echo ListView::widget([
+                'dataProvider' => $data,
+                'itemOptions' => [
+                    'class' => 'item'
+                ],
+                'itemView' => $view,
+                'viewParams' => [
+                    'behavior' => $behavior,
+                    'widgetClass' => $widgetClass],
+                'layout' => "{pager}\n{items}\n{summary}"
+            ]);
             ?>
         </div>
     </div>

@@ -2,11 +2,13 @@
 
 namespace jonasw91\loggablebehavior\models;
 
+use app\models\Task;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\data\ActiveDataProvider;
 use yii\db\ActiveRecord;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "log_entry".
@@ -31,22 +33,29 @@ class LogEntry extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gibt einen DataProvide (ActiveDataProvider) zurück, der nach Logeinträgen zum
+     * übergebenen Model bzw. zu dessen Typ und ID sucht und diese seitenweise zurückgibt.
+     *
      * @param $model ActiveRecord
-     * @return $this
+     *      das Model für das Logeinträge gesucht wird
+     * @param $pageSize int
+     *      die Anzahl von Logeinträgen pro Seite
+     * @return ActiveDataProvider
+     *      ActiveDataProvider von Logeinträgen des übergebenen Models
      */
-    public static function getLogs($model)
+    public static function getLogs(ActiveRecord $model, $pageSize = 5)
     {
-
         if (!is_null($model)) {
             $id = $model->id;
             $type = $model->className();
             $query = LogEntry::find()
                 ->where(['model_id' => $id, 'model_type' => $type])
                 ->orderBy('created_at DESC');
-            return new ActiveDataProvider(['query' => $query, 'pagination' => ['pageSize' => 5, 'pageParam' => 'log']]);
+            return new ActiveDataProvider(['query' => $query, 'pagination' => ['pageSize' => $pageSize, 'pageParam' => 'log']]);
         }
         return [];
     }
+
 
     /**
      * @inheritdoc
@@ -78,6 +87,9 @@ class LogEntry extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @inheritdoc
+     */
     public function behaviors()
     {
         return [
@@ -94,5 +106,29 @@ class LogEntry extends \yii\db\ActiveRecord
                 ]
             ],
         ];
+    }
+
+    /**
+     * Gibt eine Instance des übergebenen Modeltyps zurück
+     *
+     * @param $model_type string
+     *      der Klassenname des Models
+     * @param $attributes array
+     *      die Attribute des Models als assoziatives Array
+     * @return ActiveRecord
+     *      eine Instanze des angegebenen Modelstyps;
+     *      null falls $model_type null ist
+     */
+    public static function loadObject($model_type, $attributes)
+    {
+        if (!is_null($model_type)) {
+            $object = new $model_type ();
+            if (!is_null($attributes)) {
+                $attributes = [StringHelper::basename(get_class($object)) => (array)json_decode($attributes)];
+                $object->load($attributes);
+            }
+            return $object;
+        }
+        return null;
     }
 }
