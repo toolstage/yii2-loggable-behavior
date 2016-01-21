@@ -175,7 +175,7 @@ class LogEntryWidget extends Widget
     public static function createLogEntryHeader($behavior, $logModel)
     {
         if (!is_null($behavior) && !is_null($logModel)) {
-            $user = Yii::$app->getUser();
+            $user = User::findOne (["id" => $logModel->createdby]);
             $action = $logModel->action;
             $date = $logModel->created_at;
             $action = $behavior->getActionType($action);
