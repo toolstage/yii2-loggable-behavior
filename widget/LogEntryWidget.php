@@ -6,9 +6,9 @@
  * Time: 12:54
  */
 
-namespace jonasw91\loggablebehavior\widget;
+namespace toolstage\loggablebehavior\widget;
 
-use jonasw91\loggablebehavior\models\LogEntry;
+use toolstage\loggablebehavior\models\LogEntry;
 use webvimark\modules\UserManagement\models\User;
 use Yii;
 use yii\base\Exception;
@@ -17,40 +17,8 @@ use yii\helpers\StringHelper;
 
 
 /**
- *
- * usage:
- *
- * #shows log entry list#################
- * LogEntryWidget::widget([
- *      'model' => $model
- * ]);
- *
- * #shows whether an model has seen #################
- * @Model init ()
- * spezified the view event e.g:
- * $this->on(self::EVENT_BEFORE_VIEW, [$this->getBehavior('LoggableBehavior'), 'handleEvent']);
- *
- * @Controller actionView ()
- * trigger the event
- * $model->trigger(ExampleModel::EVENT_BEFORE_VIEW);
- *
- * @View
- * LogEntryWidget::widget([
- *   'model' => $model,
- *   'type' => LogEntryWidget::VIEW_NEW
- * ]);
- *
- * #shows amount of models the actual user haven't seen yet #################
- *
- *  LogEntryWidget::widget([
- *      'model' => $model
- *      'type' => LogEntryWidget::VIEW_COUNT_SEEN
- *  ]);
- * your also have to add an view event for this widget type
- *
- *
  * Class LogEntryWidget
- * @package jonasw91\loggablebehavior\widget
+ * @package toolstage\loggablebehavior\widget
  */
 class LogEntryWidget extends Widget
 {

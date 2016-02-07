@@ -1,6 +1,6 @@
 <?php
 
-namespace jonasw91\loggablebehavior\models;
+namespace toolstage\loggablebehavior\models;
 
 use app\models\Task;
 use Yii;
@@ -33,15 +33,9 @@ class LogEntry extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gibt einen DataProvide (ActiveDataProvider) zurück, der nach Logeinträgen zum
-     * übergebenen Model bzw. zu dessen Typ und ID sucht und diese seitenweise zurückgibt.
-     *
-     * @param $model ActiveRecord
-     *      das Model für das Logeinträge gesucht wird
-     * @param $pageSize int
-     *      die Anzahl von Logeinträgen pro Seite
-     * @return ActiveDataProvider
-     *      ActiveDataProvider von Logeinträgen des übergebenen Models
+     * @param ActiveRecord $model
+     * @param int $pageSize
+     * @return array|ActiveDataProvider
      */
     public static function getLogs(ActiveRecord $model, $pageSize = 5)
     {
@@ -109,15 +103,9 @@ class LogEntry extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gibt eine Instance des übergebenen Modeltyps zurück
-     *
-     * @param $model_type string
-     *      der Klassenname des Models
-     * @param $attributes array
-     *      die Attribute des Models als assoziatives Array
-     * @return ActiveRecord
-     *      eine Instanze des angegebenen Modelstyps;
-     *      null falls $model_type null ist
+     * @param $model_type
+     * @param $attributes
+     * @return null
      */
     public static function loadObject($model_type, $attributes)
     {

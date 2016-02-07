@@ -1,12 +1,11 @@
 <?php
 
-namespace jonasw91\loggablebehavior\behavior;
+namespace toolstage\loggablebehavior\behavior;
 
-use jonasw91\loggablebehavior\models\LogEntry;
+use toolstage\loggablebehavior\models\LogEntry;
 use yii\base\Behavior;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
-
 
 /**
  * Class LoggableBehavior

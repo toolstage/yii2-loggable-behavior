@@ -1,7 +1,7 @@
 {
   "name": "toolstage/yii2-loggable-behavior",
   "type": "yii2-extension",
-  "version": "0.0.2-dev",
+  "version": "0.0.3-dev",
   "description": "Yii2 Loggable Behavior",
   "keywords": [
     "yii2",
