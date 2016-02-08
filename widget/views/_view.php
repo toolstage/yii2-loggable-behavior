@@ -8,7 +8,7 @@
  */
 
 use app\models\User;
-use jonasw91\loggablebehavior\behavior\LoggableBehavior;
+use toolstage\loggablebehavior\behavior\LoggableBehavior;
 use yii\base\Exception;
 
 /**

@@ -7,7 +7,7 @@
  */
 use yii\widgets\ListView;
 use \yii\data\ActiveDataProvider;
-use \jonasw91\loggablebehavior\behavior\LoggableBehavior;
+use \toolstage\loggablebehavior\behavior\LoggableBehavior;
 
 /**
  * @var ActiveDataProvider $data
