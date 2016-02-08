@@ -124,4 +124,21 @@ class LogEntry extends ActiveRecord
         }
         return null;
     }
+
+    /**
+     * @param ActiveRecord $model
+     * @return bool
+     */
+    public static function hasEntry(ActiveRecord $model)
+    {
+        if (!is_null($model)) {
+            $logEntry = LogEntry::findOne([
+                'model_id' => $model->id
+            ]);
+            if (!is_null($logEntry)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

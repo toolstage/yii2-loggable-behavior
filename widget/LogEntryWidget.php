@@ -44,6 +44,7 @@ class LogEntryWidget extends Widget
         'create' => '<i class="glyphicon glyphicon-plus-sign"></i>',
         'update' => '<i class="glyphicon glyphicon-pencil"></i>',
         'view' => '<i class="glyphicon glyphicon-eye-open"></i>',
+        'set' => '<i class="glyphicon glyphicon-thumbs-up"></i>',
         'delete' => '<i class="glyphicon glyphicon-trash"></i>',
         'right' => '<i class="glyphicon glyphicon-arrow-right"></i>'
     ];
@@ -193,13 +194,8 @@ class LogEntryWidget extends Widget
      *
      * @return mixed
      */
-    protected function loadLogs($logClass = null)
+    protected function loadLogs($pageSize = 5)
     {
-        if (!is_null($logClass)) {
-            $logs = LogEntry::getLogs($logClass);
-        } else {
-            $logs = LogEntry::getLogs($this->model);
-        }
-        return $logs;
+        return LogEntry::getLogs($this->model, $pageSize);
     }
 }

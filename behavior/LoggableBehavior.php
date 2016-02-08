@@ -86,27 +86,33 @@ class LoggableBehavior extends Behavior
      */
     public function handleEvent($event)
     {
+
         /**
-         * Get action
+         * Get the action
          */
-        $action = \Yii::$app->requestedAction->id;
+        if ($event->hasProperty('action') && !is_null($event->action)) {
+            $action = $event->action;
+        } else {
+            $action = \Yii::$app->requestedAction->id;
+        }
 
         if ($this->containsAction($action)) {
+
             /**
-             *  Get model
+             *  Get the Model
              */
             $model = $this->owner;
 
             $attr = null;
             $oldAttr = null;
-            if (strcmp($action, self::ACTION_UPDATE) == 0 || strcmp($action, 'createajax') == 0) {
+            if (in_array($action, $this->actions[self::ACTION_UPDATE]) || in_array($action, $this->actions[self::ACTION_CREATE])) {
                 /**
                  * Get the attributes
                  */
                 $attr = $this->removeUnusedAttributes($model->getAttributes());
                 $oldAttr = $this->removeUnusedAttributes($model->getOldAttributes());
             }
-            return $this->addLogEntry($model->id, $model->className(), $action, $oldAttr, $attr);
+            return $this->addLogEntry($model->id, $model->className(), $action, $oldAttr, $attr, $event);
         }
         return false;
     }
@@ -127,10 +133,11 @@ class LoggableBehavior extends Behavior
      * @return bool
      *      whether the log entry has been saved
      */
-    protected function addLogEntry($model_id, $model_type, $action, $old_attr = null, $new_attr = null)
+    protected function addLogEntry($model_id, $model_type, $action, $old_attr = null, $new_attr = null, $eventData)
     {
         if ($action == self::ACTION_VIEW || $action == self::ACTION_CREATE) {
-            if (LogEntry::findOne(['model_id' => $model_id, 'model_type' => $model_type])) {
+            $entry = LogEntry::findOne(['model_id' => $model_id, 'model_type' => $model_type, 'action' => $action, 'created_by' => \Yii::$app->user->id]);
+            if (!is_null($entry)) {
                 return false;
             }
         }
@@ -138,12 +145,27 @@ class LoggableBehavior extends Behavior
         $logEntry->model_id = $model_id;
         $logEntry->model_type = $model_type;
         $logEntry->action = $action;
-        if (!is_null($old_attr) && !is_null($new_attr) && count(array_diff_assoc($old_attr, $new_attr))) {
-            $logEntry->old_attr = json_encode(array_diff_assoc($old_attr, $new_attr));
-            $logEntry->new_attr = json_encode(array_diff_assoc($new_attr, $old_attr));
-        } else {
-            if ($action == self::ACTION_UPDATE) {
-                return false;
+
+
+        if (!is_null($old_attr) && !is_null($new_attr)) {
+            if ($eventData != null && $eventData->hasProperty('attributes')) {
+                /**
+                 * @var LogEvent $eventData
+                 */
+                foreach ($eventData->attributes as $key => $value) {
+                    $new_attr [$key] = $value;
+                    $old_attr [$key] = '';
+                }
+            }
+            if (count(array_diff_assoc($old_attr, $new_attr))) {
+                $logEntry->old_attr = array_diff_assoc($old_attr, $new_attr);
+                $logEntry->new_attr = array_diff_assoc($new_attr, $old_attr);
+                $logEntry->old_attr = json_encode($logEntry->old_attr);
+                $logEntry->new_attr = json_encode($logEntry->new_attr);
+            } else {
+                if ($action == self::ACTION_UPDATE) {
+                    return false;
+                }
             }
         }
         return $logEntry->save(true);

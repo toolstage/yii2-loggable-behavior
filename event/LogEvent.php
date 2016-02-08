@@ -12,7 +12,7 @@ use yii\base\Event;
 
 /**
  * Class LogEvent
- * @package jonasw91\loggablebehavior\event
+ * @package toolstage\loggablebehavior\event
  *
  * @var array $attributes
  * @var string $action
