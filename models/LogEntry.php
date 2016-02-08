@@ -2,7 +2,6 @@
 
 namespace toolstage\loggablebehavior\models;
 
-use app\models\Task;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
@@ -22,7 +21,7 @@ use yii\helpers\StringHelper;
  * @property integer $created_by
  * @property integer $created_at
  */
-class LogEntry extends \yii\db\ActiveRecord
+class LogEntry extends ActiveRecord
 {
     /**
      * @inheritdoc
@@ -42,10 +41,16 @@ class LogEntry extends \yii\db\ActiveRecord
         if (!is_null($model)) {
             $id = $model->id;
             $type = $model->className();
-            $query = LogEntry::find()
-                ->where(['model_id' => $id, 'model_type' => $type])
-                ->orderBy('created_at DESC');
-            return new ActiveDataProvider(['query' => $query, 'pagination' => ['pageSize' => $pageSize, 'pageParam' => 'log']]);
+            return
+                new ActiveDataProvider([
+                    'query' => LogEntry::find()
+                        ->where(['model_id' => $id, 'model_type' => $type])
+                        ->orderBy('created_at DESC'),
+                    'pagination' => [
+                        'pageSize' => $pageSize,
+                        'pageParam' => 'log'
+                    ]
+                ]);
         }
         return [];
     }

@@ -18,7 +18,7 @@ use yii\db\ActiveRecord;
  * public function behaviors () {
  *    'LoggableBehavior' => [
  *        'class' => LoggableBehavior::className(),
- *        'properties' => ['exampleProp' => true, ...],
+ *        'properties' => ['exampleProp', '...', ..], // $this->getAttributes() for all properties
  *         'actions' => [
  *              // Make sure that the event is triggered on your action:
  *              'create' => ['myCreate'],   // EVENT_AFTER_INSERT
@@ -87,13 +87,13 @@ class LoggableBehavior extends Behavior
     public function handleEvent($event)
     {
         /**
-         * Get the action
+         * Get action
          */
         $action = \Yii::$app->requestedAction->id;
 
         if ($this->containsAction($action)) {
             /**
-             *  Get the Model
+             *  Get model
              */
             $model = $this->owner;
 
@@ -106,7 +106,7 @@ class LoggableBehavior extends Behavior
                 $attr = $this->removeUnusedAttributes($model->getAttributes());
                 $oldAttr = $this->removeUnusedAttributes($model->getOldAttributes());
             }
-            return $this->addLogEntry($model->id, $model->className(), $action, $oldAttr, $attr, $action);
+            return $this->addLogEntry($model->id, $model->className(), $action, $oldAttr, $attr);
         }
         return false;
     }
@@ -114,7 +114,7 @@ class LoggableBehavior extends Behavior
     /**
      * Creates and saves a new log entry. Only properties that have been changed will be saved.
      *
-     * @param $model_id
+     * @param int $model_id
      *      the id of this model
      * @param $model_type
      *      the class name of the model
@@ -127,7 +127,7 @@ class LoggableBehavior extends Behavior
      * @return bool
      *      whether the log entry has been saved
      */
-    protected function addLogEntry($model_id, $model_type, $action, $old_attr = null, $new_attr = null, $action = null)
+    protected function addLogEntry($model_id, $model_type, $action, $old_attr = null, $new_attr = null)
     {
         if ($action == self::ACTION_VIEW || $action == self::ACTION_CREATE) {
             if (LogEntry::findOne(['model_id' => $model_id, 'model_type' => $model_type])) {
@@ -169,9 +169,9 @@ class LoggableBehavior extends Behavior
      */
     protected function removeUnusedAttributes($attr)
     {
-        foreach ($attr as $key => $value) {
-            if (!in_array($key, $this->properties)) {
-                unset($attr[$key]);
+        foreach ($attr as $value) {
+            if (!in_array($value, $this->properties)) {
+                unset($attr[$value]);
             }
         }
         return $attr;
@@ -197,7 +197,7 @@ class LoggableBehavior extends Behavior
      *
      * @return string one of ['create','update','view','delete']
      * @throws Exception
-     *      if the given reaction has not been specified
+     *      if the given action has not been specified
      */
     public function getActionType($action)
     {
@@ -206,7 +206,7 @@ class LoggableBehavior extends Behavior
                 return $key;
             }
         }
-        throw new Exception ("Unkown action: " . $action . ". You have to define your action at the LoggableBehavior!");
+        throw new Exception ("Unkown action: " . $action . ".");
     }
 
     /**
