@@ -97,7 +97,6 @@ class LoggableBehavior extends Behavior
         }
 
         if ($this->containsAction($action)) {
-
             /**
              *  Get the Model
              */
@@ -191,9 +190,9 @@ class LoggableBehavior extends Behavior
      */
     protected function removeUnusedAttributes($attr)
     {
-        foreach ($attr as $value) {
-            if (!in_array($value, $this->properties)) {
-                unset($attr[$value]);
+        foreach ($attr as $key => $value) {
+            if (!in_array($key, $this->properties)) {
+                unset($attr[$key]);
             }
         }
         return $attr;
